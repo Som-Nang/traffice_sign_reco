@@ -47,8 +47,8 @@ history = model.fit(
     batch_size=64
 )
 
-# Save model
+# Save model in Keras format (better compatibility)
 os.makedirs("model", exist_ok=True)
-model.save("model/traffic_sign_model.h5")
+model.save("model/traffic_sign_model.keras")
 
-print("Model saved to model/traffic_sign_model.h5")
+print("Model saved to model/traffic_sign_model.keras")

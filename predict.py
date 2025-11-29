@@ -51,7 +51,7 @@ class_names = {
     43: 'No left u-turn : មិនអនុញ្ញាតបត់ស្ដាំ',
 }
 
-model = load_model("model/traffic_sign_model.h5")
+model = load_model("model/traffic_sign_model.keras")
 
 def predict_sign(path):
     img = cv2.imread(path)

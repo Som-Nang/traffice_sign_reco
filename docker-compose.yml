@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    working_dir: /app
+    volumes:
+      - ./:/app
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+    command: bash start.sh

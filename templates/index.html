@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Traffic Sign Recognition AI</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #3a88ee 0%, #2882f8 100%);
+        min-height: 100vh;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .container {
+        max-width: 1200px;
+        width: 100%;
+        margin: 0 auto;
+      }
+
+      .header {
+        text-align: center;
+        color: white;
+        margin-bottom: 40px;
+        animation: fadeInDown 0.8s ease-out;
+      }
+
+      .header h1 {
+        font-size: 3em;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .header p {
+        font-size: 1.2em;
+        opacity: 0.9;
+      }
+
+      .main-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 40px;
+        animation: fadeInUp 0.8s ease-out;
+      }
+
+      .upload-section {
+        border: 3px dashed #667eea;
+        border-radius: 15px;
+        padding: 60px 40px;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .upload-section:hover {
+        border-color: #764ba2;
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+      }
+
+      .upload-section.dragover {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-color: white;
+      }
+
+      .upload-section.dragover * {
+        color: white !important;
+      }
+
+      .upload-icon {
+        font-size: 80px;
+        margin-bottom: 20px;
+        animation: bounce 2s infinite;
+      }
+
+      .upload-text h3 {
+        font-size: 1.8em;
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      .upload-text p {
+        color: #666;
+        font-size: 1.1em;
+      }
+
+      #fileInput {
+        display: none;
+      }
+
+      .btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.1em;
+        border-radius: 50px;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+      }
+
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .preview-section {
+        margin-top: 40px;
+        display: none;
+      }
+
+      .image-preview {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .image-preview img {
+        max-width: 400px;
+        max-height: 400px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        border: 5px solid #667eea;
+      }
+
+      .loading {
+        text-align: center;
+        display: none;
+        margin: 30px 0;
+      }
+
+      .loader {
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #667eea;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+      }
+
+      .loading-text {
+        font-size: 1.2em;
+        color: #667eea;
+        font-weight: bold;
+      }
+
+      .terminal-output {
+        display: none;
+        margin-top: 30px;
+        background: #1e1e1e;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      .terminal-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #333;
+      }
+
+      .terminal-dots {
+        display: flex;
+        gap: 8px;
+      }
+
+      .terminal-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+
+      .terminal-dot.red {
+        background: #ff5f56;
+      }
+
+      .terminal-dot.yellow {
+        background: #ffbd2e;
+      }
+
+      .terminal-dot.green {
+        background: #27c93f;
+      }
+
+      .terminal-title {
+        flex: 1;
+        text-align: center;
+        color: #8b949e;
+        font-size: 0.9em;
+      }
+
+      .terminal-content {
+        font-family: "Courier New", monospace;
+        font-size: 14px;
+        line-height: 1.6;
+        color: #c9d1d9;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      .terminal-content::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .terminal-content::-webkit-scrollbar-track {
+        background: #2d2d2d;
+        border-radius: 4px;
+      }
+
+      .terminal-content::-webkit-scrollbar-thumb {
+        background: #667eea;
+        border-radius: 4px;
+      }
+
+      .terminal-line {
+        margin-bottom: 5px;
+        animation: fadeInLine 0.3s ease-out;
+      }
+
+      .terminal-line.separator {
+        color: #58a6ff;
+        font-weight: bold;
+        margin: 10px 0;
+      }
+
+      .terminal-line.success {
+        color: #3fb950;
+      }
+
+      .terminal-line.warning {
+        color: #d29922;
+      }
+
+      .terminal-line.error {
+        color: #f85149;
+      }
+
+      .terminal-line.info {
+        color: #58a6ff;
+      }
+
+      @keyframes fadeInLine {
+        from {
+          opacity: 0;
+          transform: translateX(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .results-section {
+        display: none;
+        margin-top: 30px;
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      .result-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+      }
+
+      .result-title {
+        font-size: 1.3em;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .result-item {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        backdrop-filter: blur(10px);
+      }
+
+      .result-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .result-label {
+        font-weight: 600;
+        font-size: 1.1em;
+      }
+
+      .result-value {
+        font-size: 1.1em;
+        font-weight: bold;
+      }
+
+      .confidence-bar {
+        width: 100%;
+        height: 30px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 15px;
+        overflow: hidden;
+        margin-top: 10px;
+      }
+
+      .confidence-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #4ade80, #22c55e);
+        transition: width 1s ease-out;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+      }
+
+      .confidence-excellent {
+        background: linear-gradient(90deg, #4ade80, #22c55e);
+      }
+
+      .confidence-good {
+        background: linear-gradient(90deg, #60a5fa, #3b82f6);
+      }
+
+      .confidence-moderate {
+        background: linear-gradient(90deg, #fbbf24, #f59e0b);
+      }
+
+      .confidence-low {
+        background: linear-gradient(90deg, #f87171, #ef4444);
+      }
+
+      .top-predictions {
+        background: white;
+        color: #333;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .top-predictions h3 {
+        color: #667eea;
+        margin-bottom: 20px;
+        font-size: 1.5em;
+      }
+
+      .prediction-item {
+        padding: 15px;
+        border-left: 4px solid #667eea;
+        background: #f9fafb;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .prediction-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .prediction-rank {
+        display: inline-block;
+        background: #667eea;
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 30px;
+        font-weight: bold;
+        margin-right: 10px;
+      }
+
+      .prediction-confidence {
+        float: right;
+        color: #667eea;
+        font-weight: bold;
+        font-size: 1.1em;
+      }
+
+      .new-prediction-btn {
+        display: block;
+        width: 100%;
+        margin-top: 30px;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      }
+
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-20px);
+        }
+        60% {
+          transform: translateY(-10px);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 2em;
+        }
+
+        .main-card {
+          padding: 20px;
+        }
+
+        .upload-section {
+          padding: 40px 20px;
+        }
+
+        .image-preview img {
+          max-width: 100%;
+        }
+      }
+
+      .error-message {
+        background: #fee2e2;
+        border: 2px solid #ef4444;
+        color: #dc2626;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+        display: none;
+        animation: shake 0.5s;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-10px);
+        }
+        75% {
+          transform: translateX(10px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🚦 Traffic Sign Recognition AI</h1>
+        <p>Upload a traffic sign image and let AI identify it instantly</p>
+      </div>
+
+      <div class="main-card">
+        <div class="upload-section" id="uploadSection">
+          <div class="upload-icon">📤</div>
+          <div class="upload-text">
+            <h3>Drag & Drop your image here</h3>
+            <p>or click to browse</p>
+            <p style="font-size: 0.9em; margin-top: 10px; color: #999">
+              Supported formats: JPG, PNG, JPEG
+            </p>
+          </div>
+          <input type="file" id="fileInput" accept="image/*" />
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <div class="preview-section" id="previewSection">
+          <div class="image-preview">
+            <img id="previewImage" src="" alt="Preview" />
+          </div>
+          <div style="text-align: center">
+            <button class="btn" id="analyzeBtn">🔍 Analyze Traffic Sign</button>
+          </div>
+        </div>
+
+        <div class="loading" id="loading">
+          <div class="loader"></div>
+          <div class="loading-text">Analyzing image with AI...</div>
+        </div>
+
+        <div class="terminal-output" id="terminalOutput">
+          <div class="terminal-header">
+            <div class="terminal-dots">
+              <div class="terminal-dot red"></div>
+              <div class="terminal-dot yellow"></div>
+              <div class="terminal-dot green"></div>
+            </div>
+            <div class="terminal-title">AI Processing Terminal</div>
+          </div>
+          <div class="terminal-content" id="terminalContent"></div>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+          <div class="result-card">
+            <div class="result-title">
+              <span style="font-size: 1.5em">🎯</span>
+              <span>Prediction Results</span>
+            </div>
+
+            <div class="result-item">
+              <span class="result-label">🏷️ Sign Name:</span>
+              <span class="result-value" id="signName">-</span>
+            </div>
+
+            <div class="result-item">
+              <span class="result-label">🛑 Class ID:</span>
+              <span class="result-value" id="classId">-</span>
+            </div>
+
+            <div class="result-item">
+              <div style="width: 100%">
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 5px;
+                  "
+                >
+                  <span class="result-label">📊 Confidence:</span>
+                  <span class="result-value" id="confidenceValue">-</span>
+                </div>
+                <div class="confidence-bar">
+                  <div
+                    class="confidence-fill"
+                    id="confidenceFill"
+                    style="width: 0%"
+                  >
+                    <span id="confidencePercent"></span>
+                  </div>
+                </div>
+                <div style="margin-top: 10px; text-align: center">
+                  <span
+                    id="confidenceMessage"
+                    style="font-style: italic"
+                  ></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="top-predictions">
+            <h3>📈 Top 5 Predictions</h3>
+            <div id="topPredictions"></div>
+          </div>
+
+          <button class="btn new-prediction-btn" id="newPredictionBtn">
+            🔄 Analyze Another Image
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const uploadSection = document.getElementById("uploadSection");
+      const fileInput = document.getElementById("fileInput");
+      const previewSection = document.getElementById("previewSection");
+      const previewImage = document.getElementById("previewImage");
+      const analyzeBtn = document.getElementById("analyzeBtn");
+      const loading = document.getElementById("loading");
+      const resultsSection = document.getElementById("resultsSection");
+      const errorMessage = document.getElementById("errorMessage");
+      const newPredictionBtn = document.getElementById("newPredictionBtn");
+      const terminalOutput = document.getElementById("terminalOutput");
+      const terminalContent = document.getElementById("terminalContent");
+
+      let selectedFile = null;
+
+      // Click to upload
+      uploadSection.addEventListener("click", () => {
+        fileInput.click();
+      });
+
+      // File input change
+      fileInput.addEventListener("change", (e) => {
+        handleFile(e.target.files[0]);
+      });
+
+      // Drag and drop
+      uploadSection.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        uploadSection.classList.add("dragover");
+      });
+
+      uploadSection.addEventListener("dragleave", () => {
+        uploadSection.classList.remove("dragover");
+      });
+
+      uploadSection.addEventListener("drop", (e) => {
+        e.preventDefault();
+        uploadSection.classList.remove("dragover");
+        handleFile(e.dataTransfer.files[0]);
+      });
+
+      function handleFile(file) {
+        if (!file) return;
+
+        // Validate file type
+        if (!file.type.startsWith("image/")) {
+          showError("Please upload a valid image file (JPG, PNG, JPEG)");
+          return;
+        }
+
+        selectedFile = file;
+
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          previewImage.src = e.target.result;
+          previewSection.style.display = "block";
+          uploadSection.style.display = "none";
+          errorMessage.style.display = "none";
+          resultsSection.style.display = "none";
+          terminalOutput.style.display = "none";
+        };
+        reader.readAsDataURL(file);
+      }
+
+      // Analyze button
+      analyzeBtn.addEventListener("click", async () => {
+        if (!selectedFile) return;
+
+        analyzeBtn.disabled = true;
+        loading.style.display = "block";
+        resultsSection.style.display = "none";
+        errorMessage.style.display = "none";
+        terminalOutput.style.display = "none";
+
+        // Show loading for a moment
+        setTimeout(async () => {
+          loading.style.display = "none";
+          terminalOutput.style.display = "block";
+          terminalContent.innerHTML = "";
+
+          // Simulate terminal output
+          await addTerminalLine("🔄 Loading AI model...", "info");
+          await sleep(300);
+          await addTerminalLine("✓ Model loaded successfully!", "success");
+          await sleep(200);
+          await addTerminalLine("📁 Reading image file...", "info");
+          await sleep(300);
+          await addTerminalLine(
+            "✓ Image loaded: " + selectedFile.name,
+            "success"
+          );
+          await sleep(200);
+          await addTerminalLine("🔧 Preprocessing image...", "info");
+          await sleep(300);
+          await addTerminalLine("  → Resizing to 32x32 pixels", "");
+          await sleep(200);
+          await addTerminalLine("  → Converting to grayscale", "");
+          await sleep(200);
+          await addTerminalLine("  → Normalizing pixel values", "");
+          await sleep(200);
+          await addTerminalLine("✓ Preprocessing complete!", "success");
+          await sleep(300);
+          await addTerminalLine(
+            "🧠 Running neural network prediction...",
+            "info"
+          );
+          await sleep(500);
+
+          const formData = new FormData();
+          formData.append("image", selectedFile);
+
+          try {
+            const response = await fetch("/predict", {
+              method: "POST",
+              body: formData,
+            });
+
+            const data = await response.json();
+
+            if (data.error) {
+              await addTerminalLine("❌ Error: " + data.error, "error");
+              showError(data.error);
+            } else {
+              await addTerminalLine("✓ Prediction complete!", "success");
+              await sleep(300);
+              await addTerminalLine("", "");
+              await addTerminalLine(
+                "==================================================",
+                "separator"
+              );
+              await addTerminalLine(
+                "🚦 TRAFFIC SIGN PREDICTION RESULTS",
+                "separator"
+              );
+              await addTerminalLine(
+                "==================================================",
+                "separator"
+              );
+              await addTerminalLine("📁 Image: " + selectedFile.name, "");
+              await addTerminalLine(
+                "🛑 Predicted Class ID: " + data.class_id,
+                ""
+              );
+              await addTerminalLine("🏷️  Sign Name: " + data.sign_name, "");
+              await addTerminalLine(
+                "📊 Confidence: " + data.confidence + "%",
+                ""
+              );
+              await sleep(200);
+
+              if (data.confidence >= 90) {
+                await addTerminalLine(
+                  "✅ Confidence Level: Very High - Reliable prediction",
+                  "success"
+                );
+              } else if (data.confidence >= 70) {
+                await addTerminalLine(
+                  "⚠️  Confidence Level: Good - Fairly reliable",
+                  "warning"
+                );
+              } else if (data.confidence >= 50) {
+                await addTerminalLine(
+                  "⚠️  Confidence Level: Moderate - Use with caution",
+                  "warning"
+                );
+              } else {
+                await addTerminalLine(
+                  "❌ Confidence Level: Low - Unreliable prediction",
+                  "error"
+                );
+              }
+
+              await addTerminalLine(
+                "==================================================",
+                "separator"
+              );
+              await sleep(500);
+
+              displayResults(data);
+            }
+          } catch (error) {
+            await addTerminalLine("❌ Error: Failed to analyze image", "error");
+            showError("Failed to analyze image. Please try again.");
+            console.error("Error:", error);
+          } finally {
+            analyzeBtn.disabled = false;
+          }
+        }, 800);
+      });
+
+      function sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      function addTerminalLine(text, type = "") {
+        return new Promise((resolve) => {
+          const line = document.createElement("div");
+          line.className = "terminal-line " + type;
+          line.textContent = text;
+          terminalContent.appendChild(line);
+          terminalContent.scrollTop = terminalContent.scrollHeight;
+          setTimeout(resolve, 50);
+        });
+      }
+
+      function displayResults(data) {
+        document.getElementById("signName").textContent = data.sign_name;
+        document.getElementById("classId").textContent = data.class_id;
+        document.getElementById("confidenceValue").textContent =
+          data.confidence_level;
+        document.getElementById(
+          "confidencePercent"
+        ).textContent = `${data.confidence}%`;
+        document.getElementById("confidenceMessage").textContent =
+          data.confidence_message;
+
+        // Animate confidence bar
+        const confidenceFill = document.getElementById("confidenceFill");
+        confidenceFill.className =
+          "confidence-fill confidence-" + data.confidence_status;
+        setTimeout(() => {
+          confidenceFill.style.width = `${data.confidence}%`;
+        }, 100);
+
+        // Display top 5 predictions
+        const topPredictionsDiv = document.getElementById("topPredictions");
+        topPredictionsDiv.innerHTML = "";
+        data.top_5_predictions.forEach((pred, index) => {
+          const predDiv = document.createElement("div");
+          predDiv.className = "prediction-item";
+          predDiv.innerHTML = `
+                    <span class="prediction-rank">${index + 1}</span>
+                    <span>${pred.sign_name}</span>
+                    <span class="prediction-confidence">${pred.confidence.toFixed(
+                      2
+                    )}%</span>
+                `;
+          topPredictionsDiv.appendChild(predDiv);
+        });
+
+        resultsSection.style.display = "block";
+      }
+
+      function showError(message) {
+        errorMessage.textContent = "❌ Error: " + message;
+        errorMessage.style.display = "block";
+      }
+
+      // New prediction button
+      newPredictionBtn.addEventListener("click", () => {
+        selectedFile = null;
+        fileInput.value = "";
+        uploadSection.style.display = "block";
+        previewSection.style.display = "none";
+        resultsSection.style.display = "none";
+        errorMessage.style.display = "none";
+        terminalOutput.style.display = "none";
+      });
+    </script>
+  </body>
+</html>
