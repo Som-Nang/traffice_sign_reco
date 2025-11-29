@@ -38,6 +38,16 @@ A professional web-based GUI for traffic sign recognition using deep learning. T
    - Click "Analyze Traffic Sign" button
    - View the AI prediction results with confidence scores
 
+## Run with Docker-Compose
+
+Install Docker and Docker-Compose, then run:
+
+1. **Build and Start the Docker Containers**
+
+   ```bash
+   docker-compose up -d
+   ```
+
 ## Application Structure
 
 ```
