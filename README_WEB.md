@@ -13,12 +13,23 @@ A professional web-based GUI for traffic sign recognition using deep learning. T
 
 ## Installation
 
+1. **Clone the Repository**
+   ```bash
+   git clone <repository_url>
+   cd traffic_sign_ai
+   ```
+
+```bash
+source /venv/bin/activate
+```
+
+`````bash
+pip install -r requirements.txt
+````bash
 1. **Install Dependencies**
    ```bash
    pip install -r requirements.txt
    ```
-
-## Running the Application
 
 1. **Start the Flask Server**
 
@@ -148,3 +159,4 @@ This will predict the sign in `test_sign.png` and display results in the termina
 ## License
 
 This project uses the GTSRB (German Traffic Sign Recognition Benchmark) dataset.
+`````
