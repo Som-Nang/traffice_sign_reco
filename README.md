@@ -14,19 +14,18 @@ A professional web-based GUI for traffic sign recognition using deep learning. T
 ## Installation
 
 1. **Clone the Repository**
-   ```bash
-   git clone <repository_url>
-   cd traffic_sign_ai
-   ```
+
+```bash
+git clone <repository_url>
+cd traffic_sign_ai
+```
 
 ```bash
 source /venv/bin/activate
 ```
 
-`````bash
-pip install -r requirements.txt
-````bash
 1. **Install Dependencies**
+
    ```bash
    pip install -r requirements.txt
    ```
@@ -37,14 +36,14 @@ pip install -r requirements.txt
    python app.py
    ```
 
-2. **Open Your Browser**
+1. **Open Your Browser**
    Navigate to:
 
    ```
    http://localhost:5000
    ```
 
-3. **Upload and Analyze**
+1. **Upload and Analyze**
    - Drag and drop a traffic sign image, or click to browse
    - Click "Analyze Traffic Sign" button
    - View the AI prediction results with confidence scores
@@ -159,4 +158,7 @@ This will predict the sign in `test_sign.png` and display results in the termina
 ## License
 
 This project uses the GTSRB (German Traffic Sign Recognition Benchmark) dataset.
-`````
+
+```
+
+```
