@@ -1,0 +1,138 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+venv/
+.env/
+.env.* 
+.venv/
+env/
+ENV/
+pipenv/
+pip-wheel-metadata/
+
+Train/
+
+# Byte-compiled / C extensions
+*.egg
+*.egg-info/
+*.eggs/
+build/
+dist/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.coverage
+.coverage.*
+.cache
+.nose2cache
+.pytest_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+jupyter_metadata/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.code-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logging, local data, outputs
+logs/
+*.log
+debug.log
+
+# Data, models and large assets (machine learning)
+data/
+datasets/
+raw_data/
+processed_data/
+data_raw/
+data_processed/
+downloads/
+models/
+saved_models/
+checkpoints/
+checkpoints_best/
+weights/
+*.ckpt
+*.pth
+*.pt
+*.h5
+*.hdf5
+*.pb
+outputs/
+predictions/
+results/
+figures/
+plots/
+reports/
+
+# ML experiment tracking
+runs/
+tensorboard/
+.tensorboard/
+wandb/
+mlruns/
+mlflow/
+hydra/
+
+# Large files and caches
+*.sqlite3
+cache/
+.terraform/
+.terraform.tfstate*
+*.tfstate
+*.tfstate.backup
+
+# Docker
+docker-compose.override.yml
+.env.*.local
+
+# Node (if frontend present)
+node_modules/
+dist/
+build/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp/
+.pnp.js
+
+# Packaging
+*.manifest
+manifest.in
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+
+# Coverage and profiling
+coverage.xml
+*.prof
+
+# Sensitive files (do not commit)
+secrets.yaml
+secret_key.txt
+*.pem
+*.key
+*.crt
+credentials.json

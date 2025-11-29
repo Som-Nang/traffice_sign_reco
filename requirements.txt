@@ -1,0 +1,6 @@
+tensorflow
+numpy
+opencv-python
+scikit-learn
+matplotlib
+#https://www.kaggle.com/datasets/meowmeowmeowmeowmeow/gtsrb-german-traffic-sign?resource=download-directory&select=Train
